@@ -1,33 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace GameShark
 {
     [Serializable]
 
-    class UserList
+    class Users
     {
-        public UserList(String user, String password, String mode)
+        public String User { get; set; }
+        public String Password { get; set; }
+        public Boolean Mode { get; set; }
+
+        public Users(String user, String password, Boolean mode)
         {
             this.User = user;
             this.Password = password;
             this.Mode = mode;
         }
 
-        public String User { get; set; }
-        public String Password { get; set; }
-        public String Mode { get; set; }
-
-        public static List<UserList> getList()
+        public static List<Users> GetList()
         {
-            List<UserList> userList = new List<UserList>();
-            return userList;
+            List<Users> usersList = new List<Users>
+            {
+                new Users("admin", "admin", true)
+            };
+            return usersList;
         }
 
         public static void Save(string fileName, Object objToSerialize)
@@ -40,7 +41,7 @@ namespace GameShark
 
         public static void SaveDate()
         {
-            List<UserList> user = UserList.getList();
+            List<Users> user = GameShark.Users.GetList();
             Save("userList", user);
         }
 
@@ -54,18 +55,18 @@ namespace GameShark
             return objToSerialize;
         }
 
-        public static List<UserList> getUsers()
+        public static List<Users> GetUsers()
         {
-            List<UserList> u = null;
+            List<Users> u = null;
             Object obj = ReadObjectFromFile("userList");
-            if (obj is List<UserList>)
+            if (obj is List<Users>)
             {
-                u = (List<UserList>)obj;
+                u = (List<Users>)obj;
             }
             return u;
         }
 
-        public static String encrypt(String input)
+        public static String Encrypt(String input)
         {
             MD5 md5Hasher = MD5.Create();
             byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(input));
